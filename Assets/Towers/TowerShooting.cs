@@ -2,7 +2,8 @@ using UnityEngine;
 using System.Collections;
 
 public class TowerShooting : MonoBehaviour {
-
+	
+	public float range;
 	public Enemy target;
 	public GameObject projectile;
 	public float projectileSpeed;
@@ -30,7 +31,7 @@ public class TowerShooting : MonoBehaviour {
 	void Update() {
 		
 		if (projectileSpeed > 0 && tolerance >= timeStep && target != null) {
-						
+			
 			Vector3 p = gameObject.transform.position;
 			Vector3 a = target.prefab.transform.position;
 			

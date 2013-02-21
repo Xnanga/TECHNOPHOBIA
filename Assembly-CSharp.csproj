@@ -48,6 +48,7 @@
      <Compile Include="Assets\Enemies\EnemyList.cs" />
      <Compile Include="Assets\Enemies\Path.cs" />
      <Compile Include="Assets\Levels\OutsideLevel\Standard Assets\Character Controllers\Sources\Scripts\MouseLook.cs" />
+     <Compile Include="Assets\Targeting\TargetSystem.cs" />
      <Compile Include="Assets\Testing\AgentRespawn.cs" />
      <Compile Include="Assets\Towers\Projectile.cs" />
      <Compile Include="Assets\Towers\Range.cs" />
