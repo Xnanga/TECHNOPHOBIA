@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -157,7 +158,7 @@ public class Agent : MonoBehaviour {
 			segmentsCrossedOver++;
 		}
 		
-		if (segmentsCrossedOver > path.Count) return false;
+		if (segmentsCrossedOver >= path.Count) return false;
 		else return true;
 	}
 	

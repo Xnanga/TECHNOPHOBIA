@@ -4,9 +4,13 @@ using System.Collections;
 public class TowerShooting : MonoBehaviour {
 
 	public Enemy target;
+	public GameObject projectile;
 	public float projectileSpeed;
-	public float tolerance;
-	public float timeStep;
+	public float cooldown;
+	public float tolerance = 0.005f;
+	public float timeStep = 0.001f;
+	
+	float time;
 	
 	void Start() {
 		
@@ -26,7 +30,7 @@ public class TowerShooting : MonoBehaviour {
 	void Update() {
 		
 		if (projectileSpeed > 0 && tolerance >= timeStep && target != null) {
-			
+						
 			Vector3 p = gameObject.transform.position;
 			Vector3 a = target.prefab.transform.position;
 			
@@ -35,7 +39,6 @@ public class TowerShooting : MonoBehaviour {
 			float t = dpa / projectileSpeed;
 			
 		repeat:
-			// Test for hit
 			if (!target.prefab.GetComponent<Agent>().canHit(t)) goto end;
 			Vector3 b = target.prefab.GetComponent<Agent>().positionAt(t);
 			
@@ -54,31 +57,20 @@ public class TowerShooting : MonoBehaviour {
 				goto repeat;
 			}
 			
-			/*Vector2 npb = Vector3.Normalize(b - p);
-			Vector2 c = transform.forward;
-			
-			float angle = Mathf.Acos(Vector2.Dot(npb, c));
-			
-			Vector3 rotation = new Vector3(0, angle, 0);
-			
-			transform.Rotate(Vector3.up, angle);*/
-			
-			/*Vector3 ndpb = Vector3.Normalize(b - p);
-			transform.rotation = Quaternion.LookRotation(npb);*/
-			
-			/*Vector3 relativeUp = new Vector3(0, 0, -1);
-			Vector3 relativePos = b - transform.position;
-			transform.rotation = Quaternion.LookRotation(relativePos,relativeUp);*/
-			
-			//transform.LookAt(b);
-			
-			// Shift b into the same plane as p
 			b.z = p.z;
 			
-			// Rotate to look at b
 			transform.rotation = Quaternion.LookRotation(b - p, transform.up);
 			
-			// Fire projectile
+			if (time <= 0) {
+			
+				GameObject shot = (GameObject) Instantiate(projectile, transform.position, projectile.transform.rotation);
+				shot.GetComponent<Projectile>().initialise(b, projectileSpeed);
+				time = cooldown;
+			}
+			else {
+				
+				time -= Time.deltaTime;
+			}
 			
 		end:
 			int i = 0;

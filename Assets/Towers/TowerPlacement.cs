@@ -3,7 +3,7 @@ using System.Collections;
 
 public class TowerPlacement : MonoBehaviour {
 	
-	public Tower currentTower;
+	public Tower selectedTower;
 	
 	Tower[] towerList;
 	
@@ -17,7 +17,7 @@ public class TowerPlacement : MonoBehaviour {
 				this.towerList = towerList.towers;
 		}
 		
-		currentTower = this.towerList[0];
+		selectedTower = this.towerList[0];
 	}
 	
 	void Update() {
@@ -26,13 +26,11 @@ public class TowerPlacement : MonoBehaviour {
 		RaycastHit hit = new RaycastHit();
 		if (Input.GetButtonDown("Fire1") && Physics.Raycast(ray, out hit) && hit.collider.tag == "TowerArea") {
 			
-			if (currentTower != null) {
+			if (hit.transform.GetComponent<TowerArea>().currentTower == null) {
 				
-				// Check for tower selection and place tower prefab in this area,
-				// with the centre of the tower aligned with the base of this collider
-				// (the tower's base will be aligned with the centre of it's parent GO)
+				// Check for tower selection and place tower prefab in this area
 				
-				Instantiate(currentTower.prefab, transform.position, currentTower.prefab.transform.rotation);
+				hit.transform.GetComponent<TowerArea>().currentTower = (GameObject) Instantiate(selectedTower.prefab, hit.transform.position, selectedTower.prefab.transform.rotation);
 			}
 			else {
 				
