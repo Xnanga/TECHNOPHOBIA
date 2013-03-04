@@ -41,7 +41,8 @@ public class Agent : MonoBehaviour {
 			
 			time += (speed * Time.deltaTime) / distance;
 			transform.position = bezierInterpolate();
-			transform.LookAt(bezierInterpolate(time + 0.001f));
+			//transform.LookAt(bezierInterpolate(time + 0.001f));
+			// Force sprite to look at camera.
 			
 			if (transform.position == path[0][0]) {
 				

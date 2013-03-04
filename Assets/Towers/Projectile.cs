@@ -6,12 +6,7 @@ public class Projectile : MonoBehaviour {
 	Vector3 direction;
 	float speed;
 	float time;
-	float range;
-	
-	public void Start() {
-		
-		range = GameObject.FindGameObjectWithTag("GameController").GetComponent<Range>().range;
-	}
+	float range = 200f;
 	
 	public void Update() {
 		

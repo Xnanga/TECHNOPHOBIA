@@ -4,7 +4,7 @@ using System.Collections;
 public class TowerShooting : MonoBehaviour {
 	
 	public float range;
-	public Enemy target;
+	public GameObject target;
 	public GameObject projectile;
 	public float projectileSpeed;
 	public float cooldown;
@@ -18,9 +18,9 @@ public class TowerShooting : MonoBehaviour {
 		GameObject control = GameObject.FindGameObjectWithTag("GameController");
 		if (control != null) {
 			
-			EnemyList list = control.GetComponent<EnemyList>();
+			Level list = control.GetComponent<Level>();
 			if (list != null)
-				target = list.enemies[0];
+				target = list.avaliableEnemies[0];
 		}
 		
 		//transform.LookAt(target.prefab.transform);
@@ -33,15 +33,15 @@ public class TowerShooting : MonoBehaviour {
 		if (projectileSpeed > 0 && tolerance >= timeStep && target != null) {
 			
 			Vector3 p = gameObject.transform.position;
-			Vector3 a = target.prefab.transform.position;
+			Vector3 a = target.transform.position;
 			
 			float dpa = Vector3.Distance(p, a);
 			
 			float t = dpa / projectileSpeed;
 			
 		repeat:
-			if (!target.prefab.GetComponent<Agent>().canHit(t)) goto end;
-			Vector3 b = target.prefab.GetComponent<Agent>().positionAt(t);
+			if (!target.GetComponent<Agent>().canHit(t)) goto end;
+			Vector3 b = target.GetComponent<Agent>().positionAt(t);
 			
 			float dpb = Vector3.Distance(p, b);
 			
