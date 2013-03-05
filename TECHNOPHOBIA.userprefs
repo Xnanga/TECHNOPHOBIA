@@ -1,12 +1,12 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Towers\TowerShooting.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Towers\TowerArea.cs">
     <Files>
-      <File FileName="Assets\Towers\TowerShooting.cs" Line="33" Column="72" />
+      <File FileName="Assets\Towers\TowerShooting.cs" Line="40" Column="42" />
+      <File FileName="Assets\Enemies\Agent.cs" Line="164" Column="5" />
       <File FileName="Assets\Towers\Projectile.cs" Line="12" Column="3" />
-      <File FileName="Assets\Enemies\Agent.cs" Line="36" Column="3" />
-      <File FileName="Assets\Levels\Level.cs" Line="31" Column="44" />
-      <File FileName="Assets\Towers\TowerArea.cs" Line="30" Column="43" />
+      <File FileName="Assets\Levels\Level.cs" Line="25" Column="26" />
+      <File FileName="Assets\Towers\TowerArea.cs" Line="40" Column="5" />
       <File FileName="Assets\Enemies\SpriteManager.cs" Line="24" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>

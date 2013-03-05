@@ -4,7 +4,9 @@ using System.Collections;
 public class TowerArea : MonoBehaviour {
 
 	public GameObject currentTower;
-	public bool menuFlag = false;
+	
+	bool menuFlag = false;
+	Vector3 mousePos;
 	
 	void OnGUI() {
 		
@@ -17,8 +19,7 @@ public class TowerArea : MonoBehaviour {
 				foreach (GameObject tower in GameObject.FindGameObjectWithTag("GameController").GetComponent<Level>().avaliableTowers) {
 					
 					// Display tower build button
-					if (GUI.Button(new Rect(Camera.mainCamera.WorldToScreenPoint(gameObject.transform.position).x,
-						Camera.mainCamera.WorldToScreenPoint(gameObject.transform.position).y + yOffset, 120, 30), tower.name)) {
+					if (GUI.Button(new Rect(mousePos.x, mousePos.y + yOffset, 120, 30), tower.name)) {
 						
 						currentTower = (GameObject) Instantiate(tower, gameObject.transform.position, tower.transform.rotation);
 						GameObject.FindGameObjectWithTag("GameController").GetComponent<Level>().currentTowers.Add(currentTower);
@@ -27,10 +28,10 @@ public class TowerArea : MonoBehaviour {
 				}
 				
 				// Close button
-				if (GUI.Button(new Rect(Camera.mainCamera.WorldToScreenPoint(gameObject.transform.position).x,
-					Camera.mainCamera.WorldToScreenPoint(gameObject.transform.position).y + yOffset, 120, 30), "Close")) {
+				if (GUI.Button(new Rect(mousePos.x, mousePos.y + yOffset, 120, 30), "Close")) {
 					
 					GameObject.FindGameObjectWithTag("GameController").GetComponent<Level>().disableTowerMenu();
+					toggleMenu();
 				}
 			}
 			else {
@@ -38,5 +39,12 @@ public class TowerArea : MonoBehaviour {
 				// Draw upgrade menu
 			}
 		}
+	}
+	
+	public void toggleMenu() {
+		
+		menuFlag = !menuFlag;
+		mousePos = Input.mousePosition;
+		mousePos.y = Screen.height - mousePos.y;
 	}
 }

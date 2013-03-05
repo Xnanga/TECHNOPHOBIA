@@ -22,11 +22,11 @@ public class Level : MonoBehaviour {
 		// Tower placement system
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		RaycastHit hit = new RaycastHit();
-		if (Input.GetButton("Fire1") && Physics.Raycast(ray, out hit) && hit.collider.tag == "TowerArea") {
+		if (Input.GetButtonDown("Fire1") && Physics.Raycast(ray, out hit) && hit.collider.tag == "TowerArea") {
 			
 			// Disable any previously selected tower area
-			if (selectedArea != null) selectedArea.GetComponent<TowerArea>().menuFlag = false;
-			hit.transform.GetComponent<TowerArea>().menuFlag = true;
+			if (selectedArea != null) selectedArea.GetComponent<TowerArea>().toggleMenu();
+			hit.transform.GetComponent<TowerArea>().toggleMenu();
 			// Record the above tower area
 			selectedArea = hit.transform.gameObject;
 		}
@@ -34,7 +34,6 @@ public class Level : MonoBehaviour {
 	
 	public void disableTowerMenu() {
 		
-		selectedArea.GetComponent<TowerArea>().menuFlag = false;
 		selectedArea = null;
 	}
 }

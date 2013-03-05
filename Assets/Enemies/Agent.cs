@@ -70,12 +70,12 @@ public class Agent : MonoBehaviour {
 		if (offset == 0) {
 			
 			points = new List<Vector3>(currentPoint);
-			points.Add(path[0][0]);
+			if (path.Count >= 0) points.Add(path[0][0]);
 		}
 		else {
 			
 			points = new List<Vector3>(path[offset - 1]);
-			points.Add(path[offset][0]);
+			if (path.Count >= offset) points.Add(path[offset][0]);
 		}
 		
 		if (time > 1) time = 1;
@@ -149,7 +149,7 @@ public class Agent : MonoBehaviour {
 			}
 	}
 	
-	public bool canHit(float time) {
+	/*public bool canHit(float time) {
 		
 		time += this.time;
 		int segmentsCrossedOver = 0;
@@ -161,7 +161,7 @@ public class Agent : MonoBehaviour {
 		
 		if (segmentsCrossedOver >= path.Count) return false;
 		else return true;
-	}
+	}*/
 	
 	public Vector3 positionAt(float time) {
 		
@@ -174,5 +174,19 @@ public class Agent : MonoBehaviour {
 		}
 		
 		return bezierInterpolate(time, segmentsCrossedOver);
+	}
+	
+	public bool pathBoundsTest(float time) {
+		
+		time += this.time;
+		int segmentsCrossedOver = 0;
+		while (time > 1) {
+			
+			time = time - 1;
+			segmentsCrossedOver++;
+		}
+		
+		if (segmentsCrossedOver >= path.Count) return false;
+		else return true;
 	}
 }
