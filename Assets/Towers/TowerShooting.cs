@@ -11,8 +11,8 @@ public class TowerShooting : MonoBehaviour {
 	public GameObject spawn;
 	public float projectileSpeed;
 	public float cooldown;
-	public float tolerance = 0.05f;
-	public float timeStep = 0.001f;
+	public float tolerance = 10f;
+	public float timeStep = 0.05f;
 	
 	float time;
 	
@@ -65,7 +65,7 @@ public class TowerShooting : MonoBehaviour {
 	
 	void advanceAiming() { // Can't be trusted
 		
-		if (spawn != null && target != null && projectileSpeed > 0 && tolerance >= timeStep) {
+		if (spawn != null && target != null && projectileSpeed > 0 && timeStep > 0 && tolerance >= timeStep) {
 			
 			Agent enemy = this.target.GetComponent<Agent>();
 			if (enemy == null) return;
@@ -74,7 +74,7 @@ public class TowerShooting : MonoBehaviour {
 			Vector3 centre = gameObject.transform.position;
 			centre.z = 0;
 			
-			// For each point along path: is point within max range and outwith min range.
+			// For each point along path
 			for (float time = 0; true; time += timeStep) {
 				
 				if (!enemy.pathBoundsTest(time)) break;
@@ -88,12 +88,21 @@ public class TowerShooting : MonoBehaviour {
 					float projectileTime = Vector3.Distance(spawn.transform.position, point) / projectileSpeed;
 					
 					// Check if projectile can reach point in around the same time as  enemy
-					if (projectileTime >= time - (time * tolerance) &&
-						projectileTime <= time + (time * tolerance)) {
+					/*if (projectileTime >= time - (time * tolerance) &&
+						projectileTime <= time + (time * tolerance)) {*/
+					
+					// enemy's position after a time lapse of projectileTime
+					if (!enemy.realTimeBoundsTest(projectileTime)) break;
+					Vector3 position = enemy.timeLapse(projectileTime);
+					
+					// Enemy's position is close to point on curve
+					if (Vector3.Distance(position, point) <= tolerance) {
 						
+						// Rotate to face point
 						point.z = centre.z;
 						transform.rotation = Quaternion.LookRotation(point - centre, transform.up);
 						
+						// Fire if possible
 						if (this.time <= 0) {
 						
 							GameObject shot = (GameObject) Instantiate(projectile, spawn.transform.position, projectile.transform.rotation);

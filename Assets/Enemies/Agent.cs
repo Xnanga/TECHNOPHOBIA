@@ -115,16 +115,34 @@ public class Agent : MonoBehaviour {
 	   return r;
 	}
 	
-	private float approximateDistance() {
+	/*private float approximateDistance() {
 		
-		List<Vector3> points = new List<Vector3>(currentPoint);
-		points.Add(path[0][0]);
+		//List<Vector3> points = new List<Vector3>(currentPoint);
+		//points.Add(path[0][0]);
 		
 		float distance = 0;
 		for (float t = 0; t <= 1; t += 0.001f) {
 			
 			Vector3 a = bezierInterpolate(t);
 			Vector3 b = bezierInterpolate(t + 0.001f);
+			distance += Vector3.Distance(a, b);
+		}
+		
+		return distance;
+	}*/
+	
+	private float approximateDistance() {
+		
+		return approximateDistance(0);
+	}
+	
+	private float approximateDistance(int offset) {
+		
+		float distance = 0;
+		for (float t = 0; t <= 1; t += 0.001f) {
+			
+			Vector3 a = bezierInterpolate(t, offset);
+			Vector3 b = bezierInterpolate(t + 0.001f, offset);
 			distance += Vector3.Distance(a, b);
 		}
 		
@@ -186,23 +204,55 @@ public class Agent : MonoBehaviour {
 			segmentsCrossedOver++;
 		}
 		
-		if (segmentsCrossedOver >= path.Count) return false;
-		else return true;
+		if (segmentsCrossedOver < path.Count) return true;
+		else return false;
+	}
+	
+	public bool realTimeBoundsTest(float time) {
+		
+		float bTime = (speed * time) / distance;
+		bTime += this.time;
+		int segmentsCrossedOver = 0;
+		
+		while (bTime > 1) {
+			
+			bTime = bTime - 1;
+			if (segmentsCrossedOver++ >= path.Count) return false;
+			
+			//bTime -= this.time;
+			time = (bTime * distance) / speed;
+			
+			bTime = (speed * time) / approximateDistance(segmentsCrossedOver);
+			//bTime += this.time;
+		}
+		
+		return true;
 	}
 	
 	public Vector3 timeLapse(float time) {
 		
 		// Convert real time to bezier time
+		float bTime = (speed * time) / distance;
+		bTime += this.time;
+		int segmentsCrossedOver = 0;
 		
 		// If bezier time is greater than 1
-		//		Find difference
-		//		convert it back into real time
-		//		Repeat from start (Will need some way to get distance of any surve segment)
-		
-		// NOTE: take count of each iteration so we know which segment the enemy will be in
+		while (bTime > 1) {
+			
+			bTime = bTime - 1;
+			segmentsCrossedOver++;
+			
+			// convert remaining bezier time back into real time
+			//bTime -= this.time;
+			time = (bTime * approximateDistance(segmentsCrossedOver - 1)) / speed;
+			
+			// Convert back to bezier time with the new distance
+			bTime = (speed * time) / approximateDistance(segmentsCrossedOver);
+			//bTime += this.time;
+		}
 		
 		// Get enemies final position and return it
-		
-		return new Vector3(0, 0, 0);
+		Vector3 returnValue =  bezierInterpolate(bTime, segmentsCrossedOver);
+		return returnValue;
 	}
 }
