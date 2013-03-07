@@ -189,4 +189,20 @@ public class Agent : MonoBehaviour {
 		if (segmentsCrossedOver >= path.Count) return false;
 		else return true;
 	}
+	
+	public Vector3 timeLapse(float time) {
+		
+		// Convert real time to bezier time
+		
+		// If bezier time is greater than 1
+		//		Find difference
+		//		convert it back into real time
+		//		Repeat from start (Will need some way to get distance of any surve segment)
+		
+		// NOTE: take count of each iteration so we know which segment the enemy will be in
+		
+		// Get enemies final position and return it
+		
+		return new Vector3(0, 0, 0);
+	}
 }

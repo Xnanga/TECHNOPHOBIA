@@ -33,8 +33,8 @@ public class TowerShooting : MonoBehaviour {
 	
 	void Update() {
 		
-		basicAiming();
-		//advanceAiming();
+		//basicAiming();
+		advanceAiming();
 	}
 	
 	void basicAiming() { // Can't be trusted
