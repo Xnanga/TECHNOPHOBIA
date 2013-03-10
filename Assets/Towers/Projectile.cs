@@ -6,7 +6,7 @@ public class Projectile : MonoBehaviour {
 	Vector3 direction;
 	float speed;
 	float time;
-	float range = 200f;
+	float range = 150f;
 	
 	public void Update() {
 		

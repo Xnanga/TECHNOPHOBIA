@@ -33,11 +33,18 @@ public class TowerShooting : MonoBehaviour {
 	
 	void Update() {
 		
-		//basicAiming();
-		advanceAiming();
+		// If enemy is in range
+		Vector3 point = target.transform.position;
+		point.z = gameObject.transform.position.z;
+		if (Vector3.Distance(point, gameObject.transform.position) >= minRange &&
+			Vector3.Distance(point, gameObject.transform.position) <= maxRange) {
+			
+			//basicAiming();
+			advanceAiming();
+		}
 	}
 	
-	void basicAiming() { // Can't be trusted
+	void basicAiming() { // Can't be trusted at all
 		
 		if (spawn != null && target != null && projectileSpeed > 0) {
 			
@@ -63,7 +70,7 @@ public class TowerShooting : MonoBehaviour {
 		}
 	}
 	
-	void advanceAiming() { // Can't be trusted
+	void advanceAiming() { // Can't be trusted with small numbers, and is generally very temperamental
 		
 		if (spawn != null && target != null && projectileSpeed > 0 && timeStep > 0 && tolerance >= timeStep) {
 			
@@ -81,8 +88,8 @@ public class TowerShooting : MonoBehaviour {
 				Vector3 point = enemy.positionAt(time);
 				
 				// Check if point is within max range and outwith min range
-				if (Vector2.Distance(centre, point) <= maxRange &&
-					Vector2.Distance(centre, point) >= minRange) {
+				/*if (Vector2.Distance(centre, point) <= maxRange &&
+					Vector2.Distance(centre, point) >= minRange) {*/ // Now doing this at start of loop, with the enemy's current position
 					
 					// Time for projectile to reach point on curve
 					float projectileTime = Vector3.Distance(spawn.transform.position, point) / projectileSpeed;
@@ -105,7 +112,8 @@ public class TowerShooting : MonoBehaviour {
 						// Fire if possible
 						if (this.time <= 0) {
 						
-							GameObject shot = (GameObject) Instantiate(projectile, spawn.transform.position, projectile.transform.rotation);
+							//GameObject shot = (GameObject) Instantiate(projectile, spawn.transform.position, projectile.transform.rotation);
+							GameObject shot = (GameObject) Instantiate(projectile, spawn.transform.position, Quaternion.LookRotation(point, gameObject.transform.up));
 							shot.GetComponent<Projectile>().initialise(point, projectileSpeed);
 							this.time = cooldown;
 						}
@@ -115,7 +123,7 @@ public class TowerShooting : MonoBehaviour {
 						}
 						return;
 					}
-				}
+				//}
 			}
 		}
 	}
