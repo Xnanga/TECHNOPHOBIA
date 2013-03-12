@@ -3,6 +3,7 @@ using System.Collections;
 
 public class TowerShooting : MonoBehaviour {
 	
+	public float damage;
 	public float minRange = 0;
 	public float maxRange;
 	public float rangeStep = 0.01f;
@@ -33,14 +34,17 @@ public class TowerShooting : MonoBehaviour {
 	
 	void Update() {
 		
-		// If enemy is in range
-		Vector3 point = target.transform.position;
-		point.z = gameObject.transform.position.z;
-		if (Vector3.Distance(point, gameObject.transform.position) >= minRange &&
-			Vector3.Distance(point, gameObject.transform.position) <= maxRange) {
+		if (target != null) {
 			
-			//basicAiming();
-			advanceAiming();
+			// If enemy is in range
+			Vector3 point = target.transform.position;
+			point.z = transform.position.z;
+			if (Vector3.Distance(point, transform.position) >= minRange &&
+				Vector3.Distance(point, transform.position) <= maxRange) {
+				
+				//basicAiming();
+				advanceAiming();
+			}
 		}
 	}
 	
@@ -49,18 +53,18 @@ public class TowerShooting : MonoBehaviour {
 		if (spawn != null && target != null && projectileSpeed > 0) {
 			
 			Vector3 point = this.target.transform.position;
-			point.z = gameObject.transform.position.z;
+			point.z = transform.position.z;
 			
-			if (Vector3.Distance(point, gameObject.transform.position) > maxRange ||
-				Vector3.Distance(point, gameObject.transform.position) < minRange)
+			if (Vector3.Distance(point, transform.position) > maxRange ||
+				Vector3.Distance(point, transform.position) < minRange)
 				return;
 			
-			transform.rotation = Quaternion.LookRotation(point - gameObject.transform.position, transform.up);
+			transform.rotation = Quaternion.LookRotation(point - transform.position, transform.up);
 			
 			if (this.time <= 0) {
 			
 				GameObject shot = (GameObject) Instantiate(projectile, spawn.transform.position, projectile.transform.rotation);
-				shot.GetComponent<Projectile>().initialise(target.transform.position, projectileSpeed);
+				shot.GetComponent<Projectile>().initialise(this, target.transform.position, projectileSpeed, damage);
 				this.time = cooldown;
 			}
 			else {
@@ -78,7 +82,7 @@ public class TowerShooting : MonoBehaviour {
 			if (enemy == null) return;
 			
 			// Circle's centre
-			Vector3 centre = gameObject.transform.position;
+			Vector3 centre = transform.position;
 			centre.z = 0;
 			
 			// For each point along path
@@ -113,8 +117,8 @@ public class TowerShooting : MonoBehaviour {
 						if (this.time <= 0) {
 						
 							//GameObject shot = (GameObject) Instantiate(projectile, spawn.transform.position, projectile.transform.rotation);
-							GameObject shot = (GameObject) Instantiate(projectile, spawn.transform.position, Quaternion.LookRotation(point, gameObject.transform.up));
-							shot.GetComponent<Projectile>().initialise(point, projectileSpeed);
+							GameObject shot = (GameObject) Instantiate(projectile, spawn.transform.position, Quaternion.LookRotation(point - transform.position, transform.up));
+							shot.GetComponent<Projectile>().initialise(this, point, projectileSpeed, damage);
 							this.time = cooldown;
 						}
 						else {
@@ -126,6 +130,11 @@ public class TowerShooting : MonoBehaviour {
 				//}
 			}
 		}
+	}
+	
+	public void reportDead() {
+		
+		target = null;
 	}
 	
 	/*void Update() {

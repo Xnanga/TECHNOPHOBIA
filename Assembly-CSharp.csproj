@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Enemies\Agent.cs" />
+     <Compile Include="Assets\Enemies\Health.cs" />
      <Compile Include="Assets\Enemies\Path.cs" />
      <Compile Include="Assets\Enemies\SpawnPoint.cs" />
      <Compile Include="Assets\Enemies\SpawnSystem.cs" />
