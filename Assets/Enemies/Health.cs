@@ -4,8 +4,7 @@ using System.Collections;
 public class Health : MonoBehaviour {
 
 	public float maxHealth;
-	
-	float health;
+	public float health;
 	
 	void Start() {
 		

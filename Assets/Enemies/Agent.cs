@@ -10,9 +10,9 @@ public class Agent : MonoBehaviour {
 	
 	bool ready = false;
 	Vector3[][] path;
-	int currentPoint;
+	public int currentPoint;
 	float distance;
-	float time;
+	public float time;
 	
 	void Start() {
 		
@@ -38,10 +38,13 @@ public class Agent : MonoBehaviour {
 			if (time > 1) {
 				
 				currentPoint++;
-				time = 0;
+				float deltaTime = ((time - 1) * distance) / speed;
+				if (path.Length - currentPoint > 1) distance = approximateDistance();
+				time = (speed * deltaTime) / distance;
 			}
 			if (currentPoint == path.Length - 1) {
 				
+				GameObject.FindGameObjectWithTag("GameController").GetComponent<Level>().reportDead(gameObject);
 				Destroy(gameObject);
 				return;
 			}
@@ -54,8 +57,12 @@ public class Agent : MonoBehaviour {
 				
 				currentPoint++;
 				time = 0;
-				if (currentPoint == path.Length - 1)
+				if (currentPoint == path.Length - 1) {
+					
+					GameObject.FindGameObjectWithTag("GameController").GetComponent<Level>().reportDead(gameObject);
 					Destroy(gameObject);
+					return;
+				}
 				if (path.Length - currentPoint > 1) distance = approximateDistance();
 			}
 		}
@@ -145,21 +152,6 @@ public class Agent : MonoBehaviour {
 		}
 		
 		return distance;
-	}
-	
-	public void respawn() {
-		
-		if (pathContainer != null) {
-			
-			path = pathContainer.GetComponent<Path>().path;
-			if (path != null) {
-				
-				currentPoint = 0;
-				time = 0;
-				if (path.Length - currentPoint > 1) distance = approximateDistance();
-				ready = true;
-			}
-		}
 	}
 	
 	/*public bool canHit(float time) {

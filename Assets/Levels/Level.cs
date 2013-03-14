@@ -24,8 +24,6 @@ public class Level : MonoBehaviour {
 	
 	void Update() {
 		
-		// Targeting system
-		
 		// Tower placement system
 		Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 		RaycastHit hit = new RaycastHit();
@@ -47,7 +45,6 @@ public class Level : MonoBehaviour {
 	public void reportDead(GameObject enemy) {
 		
 		currentEnemies.Remove(enemy);
-		//gameObject.GetComponent<TargetingSystem>().updatePriorityList();
-		gameObject.GetComponent<SpawnSystem>().update(Enemy);
+		gameObject.GetComponent<SpawnSystem>().update(enemy);
 	}
 }

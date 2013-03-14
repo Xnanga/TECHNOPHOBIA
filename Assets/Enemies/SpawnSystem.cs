@@ -3,12 +3,18 @@ using System.Collections;
 
 public class SpawnSystem : MonoBehaviour {
 
-	public GameObject[] spawnPoints;
+	public GameObject spawnPoint;
 	public float timeStep = 0.05f;
-	public float selectedDifficulty;
+	public float selectedDifficulty = 0.5f;
 	public float playerPerformance;
 	
 	int[] distributionGraph;
+	public int towerCentre;
+	
+	void Start() {
+		
+		// Spawn initial wave
+	}
 	
 	public void update(GameObject enemy) {
 		
@@ -19,8 +25,6 @@ public class SpawnSystem : MonoBehaviour {
 		// If all enemies are dead
 		// Design new wave
 		// Send new wave data to spawn points
-		
-		// Screw around with the difficulty rating is needed
 	}
 	
 	public void updateGraph() { // Called when tower arrangement is changed
@@ -40,13 +44,14 @@ public class SpawnSystem : MonoBehaviour {
 					int steps = 0;
 					for (float t = searchSpace.start; t <= searchSpace.end; t += timeStep) {
 						
-						float index = (searchSpace.segment * (1/ timeStep)) + steps;
+						float index = (searchSpace.segment * (1 / timeStep)) + steps;
 						distributionGraph[(int) index]++;
 						steps++;
 					}
 				}
 			}
 		}
+		calculateTowerCentre();
 		
 		/*// Calculate standard deviation
 		
@@ -64,6 +69,42 @@ public class SpawnSystem : MonoBehaviour {
 		// Square root of the mean of the above
 		float standardDeviation = Mathf.Sqrt(sum / distributionGraph.Length);
 		int asd = 0;*/
+	}
+	
+	void calculateTowerCentre() {
+		
+		// Find maximum point
+		int max = 0, index = 0;
+		for (int i = 0; i < distributionGraph.Length; i++) {
+			if (distributionGraph[i] > max) {
+				
+				max = distributionGraph[i];
+				index = i;
+			}
+		}
+		
+		if (index == distributionGraph.Length - 1) {
+			
+			towerCentre = index;
+			return;
+		}
+		
+		// Check for plateu and find median value if there is one
+		int plateuLength = 1;
+		for (int i = index + 1; i < distributionGraph.Length; i++) {
+			
+			if (distributionGraph[i] == distributionGraph[index])
+				plateuLength++;
+			else
+				break;
+		}
+		
+		towerCentre = (index + (index + plateuLength)) / plateuLength;
+	}
+	
+	void rateEnemies() {
+		
+		
 	}
 }
 

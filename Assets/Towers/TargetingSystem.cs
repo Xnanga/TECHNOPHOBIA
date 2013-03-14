@@ -1,22 +1,95 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class TargetingSystem : MonoBehaviour {
-
+	
+	Dictionary<GameObject, float> priorityList = new Dictionary<GameObject, float>();
+	Dictionary<GameObject, List<GameObject>> possibleTargets = new Dictionary<GameObject, List<GameObject>>();
+	
 	void Update() {
 		
-		// Check for tower's without targets
-		// Assign them a target based on a weighted random choice
+		updatePossibleTargetList();
+		updatePriorityList();
 		
-		// For any tower's with targets
-		// Check for any new targets in range
-		// If new target has a higher priority then fire at it
+		foreach (GameObject tower in gameObject.GetComponent<Level>().currentTowers) {
+			
+			TowerShooting towerScript = tower.GetComponent<TowerShooting>();
+			if (towerScript != null) {
+				
+				List<GameObject> enemies = new List<GameObject>();
+				
+				if (towerScript.target != null) {
+					
+					// Check for /new/ enemies with higher priority
+					foreach (GameObject enemy in towerScript.getEnemiesInRange())
+						if (!possibleTargets[tower].Contains(enemy))
+							enemies.Add(enemy);
+				}
+				else
+					enemies = possibleTargets[tower];
+				
+				float prioritySum = 0;
+				foreach (GameObject enemy in enemies)
+					prioritySum += priorityList[enemy];
+				
+				float rnd = Random.Range(0, prioritySum);
+				
+				float cumulativeSum = 0;
+				foreach (GameObject enemy in enemies) {
+					
+					cumulativeSum += priorityList[enemy];
+					if (rnd < cumulativeSum) {
+						
+						if (towerScript.target != null) priorityList[towerScript.target] += 10;
+						towerScript.target = enemy;
+						priorityList[enemy] -= 10;
+						return;
+					}
+				}
+			}
+		}
 	}
 	
-	public void updatePriorityList() {
+	private void updatePossibleTargetList() {
 		
-		// Called when new enemies are spawned
-		// Rates each enemy with a priority
-		// Priorities are used to wieght down the random choice in target selection
+		possibleTargets.Clear();
+		
+		foreach (GameObject tower in gameObject.GetComponent<Level>().currentTowers) {
+			
+			TowerShooting towerScript = tower.GetComponent<TowerShooting>();
+			if (towerScript != null) {
+				
+				possibleTargets.Add(tower, towerScript.getEnemiesInRange());
+			}
+		}
+	}
+	
+	private void updatePriorityList() {
+		
+		priorityList.Clear();
+		
+		foreach (GameObject enemy in gameObject.GetComponent<Level>().currentEnemies) {
+			
+			float health = enemy.GetComponent<Health>().health;
+			float speed = enemy.GetComponent<Agent>().speed;
+			
+			int segment = enemy.GetComponent<Agent>().currentPoint;
+			float t = enemy.GetComponent<Agent>().time;
+			Vector3[][] path = gameObject.GetComponent<Level>().path;
+			float distanceFromEnd = (path.Length - segment - 1) + (1 - t);
+			
+			float timeStep = gameObject.GetComponent<SpawnSystem>().timeStep;
+			//float fdistroGraphSize = path.Length / timeStep;
+			//int distroGraphSize = (int) fdistroGraphSize;
+			int towerCentre = gameObject.GetComponent<SpawnSystem>().towerCentre;
+			float fdistance = (segment * (1 / timeStep)) + (t / timeStep);
+			int distance = (int) fdistance;
+			int distanceFromCentre = towerCentre - distance;
+			
+			float priority = (distanceFromEnd * 10) + (health) + (speed * 50) + distanceFromCentre;
+			
+			priorityList.Add(enemy, priority);
+		}
 	}
 }

@@ -92,8 +92,8 @@ public class TowerShooting : MonoBehaviour {
 		GameObject.FindGameObjectWithTag("GameController").GetComponent<SpawnSystem>().updateGraph();
 		
 		// Temporary, until the Targetting system is complete
-		GameObject control = GameObject.FindGameObjectWithTag("GameController");
-		target = control.GetComponent<Level>().avaliableEnemies[0];
+		//GameObject control = GameObject.FindGameObjectWithTag("GameController");
+		//target = control.GetComponent<Level>().avaliableEnemies[0];
 		
 	}
 	
@@ -246,6 +246,29 @@ public class TowerShooting : MonoBehaviour {
 	      r /= d;
 	   }
 	   return r;
+	}
+	
+	public List<GameObject> getEnemiesInRange() {
+		
+		List<GameObject> returnList = new List<GameObject>();
+		
+		Collider[] inMaxRange = Physics.OverlapSphere(transform.position, maxRange);
+		Collider[] inMinRange = Physics.OverlapSphere(transform.position, minRange);
+		
+		foreach (Collider collider in inMaxRange) {
+			
+			if (collider.tag == "Enemy") {
+				
+				bool insideMinRange = false;
+				foreach (Collider otherCollider in inMinRange)
+					if (otherCollider == collider)
+						insideMinRange = true;
+				
+				if (!insideMinRange) returnList.Add(collider.gameObject);
+			}
+		}
+		
+		return returnList;
 	}
 }
 

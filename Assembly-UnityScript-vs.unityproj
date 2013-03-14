@@ -44,10 +44,10 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Levels\OutsideLevel\Standard Assets\Character Controllers\Sources\Scripts\CharacterMotor.js" />
-     <Compile Include="Assets\Levels\OutsideLevel\Standard Assets\Character Controllers\Sources\Scripts\FPSInputController.js" />
-     <None Include="Assets\Levels\DiningRoom\Hard Surface Free\HardSurface Shaders\HardSurface Free Transparent.shader" />
-     <None Include="Assets\Levels\Hard Surface Free\HardSurface Shaders\HardSurface Free Opaque Specular.shader" />
+     <Compile Include="Assets\Levels\Resources\OutsideLevel\Standard Assets\Character Controllers\Sources\Scripts\CharacterMotor.js" />
+     <Compile Include="Assets\Levels\Resources\OutsideLevel\Standard Assets\Character Controllers\Sources\Scripts\FPSInputController.js" />
+     <None Include="Assets\Levels\Resources\DiningRoom\Hard Surface Free\HardSurface Shaders\HardSurface Free Transparent.shader" />
+     <None Include="Assets\Levels\Resources\Hard Surface Free\HardSurface Shaders\HardSurface Free Opaque Specular.shader" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

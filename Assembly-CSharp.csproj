@@ -51,14 +51,13 @@
      <Compile Include="Assets\Enemies\SpawnSystem.cs" />
      <Compile Include="Assets\Enemies\SpriteManager.cs" />
      <Compile Include="Assets\Levels\Level.cs" />
-     <Compile Include="Assets\Levels\OutsideLevel\Standard Assets\Character Controllers\Sources\Scripts\MouseLook.cs" />
-     <Compile Include="Assets\Testing\AgentRespawn.cs" />
+     <Compile Include="Assets\Levels\Resources\OutsideLevel\Standard Assets\Character Controllers\Sources\Scripts\MouseLook.cs" />
      <Compile Include="Assets\Towers\Projectile.cs" />
      <Compile Include="Assets\Towers\TargetingSystem.cs" />
      <Compile Include="Assets\Towers\TowerArea.cs" />
      <Compile Include="Assets\Towers\TowerShooting.cs" />
-     <None Include="Assets\Levels\DiningRoom\Hard Surface Free\HardSurface Shaders\HardSurface Free Transparent.shader" />
-     <None Include="Assets\Levels\Hard Surface Free\HardSurface Shaders\HardSurface Free Opaque Specular.shader" />
+     <None Include="Assets\Levels\Resources\DiningRoom\Hard Surface Free\HardSurface Shaders\HardSurface Free Transparent.shader" />
+     <None Include="Assets\Levels\Resources\Hard Surface Free\HardSurface Shaders\HardSurface Free Opaque Specular.shader" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
