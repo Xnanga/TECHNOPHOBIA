@@ -35,6 +35,17 @@ public class Agent : MonoBehaviour {
 			
 			// Add in time overstep thingy here to help smoothen transition between segments
 			time += (speed * Time.deltaTime) / distance;
+			if (time > 1) {
+				
+				currentPoint++;
+				time = 0;
+			}
+			if (currentPoint == path.Length - 1) {
+				
+				Destroy(gameObject);
+				return;
+			}
+			
 			transform.position = bezierInterpolate();
 			//transform.LookAt(bezierInterpolate(time + 0.001f));
 			// Force sprite to look at camera.
@@ -43,6 +54,8 @@ public class Agent : MonoBehaviour {
 				
 				currentPoint++;
 				time = 0;
+				if (currentPoint == path.Length - 1)
+					Destroy(gameObject);
 				if (path.Length - currentPoint > 1) distance = approximateDistance();
 			}
 		}
@@ -186,7 +199,7 @@ public class Agent : MonoBehaviour {
 			segmentsCrossedOver++;
 		}
 		
-		if (segmentsCrossedOver < path.Length - currentPoint) return true;
+		if (path.Length - currentPoint - segmentsCrossedOver > 1) return true;
 		else return false;
 	}
 	
@@ -199,7 +212,7 @@ public class Agent : MonoBehaviour {
 		while (bTime > 1) {
 			
 			bTime = bTime - 1;
-			if (segmentsCrossedOver++ >= path.Length - currentPoint) return false;
+			if (path.Length - currentPoint - segmentsCrossedOver > 1) return false;
 			
 			//bTime -= this.time;
 			time = (bTime * distance) / speed;

@@ -23,7 +23,6 @@ public class TowerArea : MonoBehaviour {
 						
 						currentTower = (GameObject) Instantiate(tower, gameObject.transform.position, tower.transform.rotation);
 						GameObject.FindGameObjectWithTag("GameController").GetComponent<Level>().currentTowers.Add(currentTower);
-						GameObject.FindGameObjectWithTag("GameController").GetComponent<SpawnSystem>().updateGraph();
 					}
 					yOffset += 35;
 				}

@@ -28,6 +28,7 @@ public class Health : MonoBehaviour {
 	public void kill() {
 		
 		Destroy(gameObject);
+		GameObject.FindGameObjectWithTag("GameController").GetComponent<Level>().reportDead(gameObject);
 		// Spawn scrap
 		// Alert Level and Targetting Systems
 	}

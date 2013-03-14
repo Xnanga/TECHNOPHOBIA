@@ -43,4 +43,11 @@ public class Level : MonoBehaviour {
 		
 		selectedArea = null;
 	}
+	
+	public void reportDead(GameObject enemy) {
+		
+		currentEnemies.Remove(enemy);
+		//gameObject.GetComponent<TargetingSystem>().updatePriorityList();
+		gameObject.GetComponent<SpawnSystem>().update(Enemy);
+	}
 }

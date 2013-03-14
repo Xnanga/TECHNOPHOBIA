@@ -32,32 +32,41 @@ public class TowerShooting : MonoBehaviour {
 			// For each pair of points
 			bool intersection = false;
 			for (int point = 0; point < path[i].Length - 1; point++) {
-				for (int otherPoint = point + 1; point < path[i].Length; otherPoint++) {
+				for (int otherPoint = point + 1; otherPoint < path[i].Length; otherPoint++) {
 					
-					// Test if circle intersects line
-					Vector3 lineNormal = Vector3.Normalize(path[i][otherPoint] - path[i][point]);
+					Vector3 line = path[i][otherPoint] - path[i][point];
+					Vector3 lineNormal = line.normalized;
 					Vector3 pointToCircle = transform.position - path[i][point];
-					Vector3 closestPoint = Vector3.Dot(pointToCircle, lineNormal) * lineNormal;
+					float closestPointMagnitude = Vector3.Dot(pointToCircle, lineNormal);
+					
+					Vector3 closestPoint = new Vector3(0, 0, 0);
+					if (closestPointMagnitude < 0)
+						closestPoint = path[i][point];
+					else if (closestPointMagnitude > line.magnitude)
+						closestPoint = path[i][otherPoint];
+					else
+						closestPoint = closestPointMagnitude * lineNormal;
 					
 					// Distance between circle and closest point on line
 					float distance = Vector3.Distance(transform.position, closestPoint);
 					
-					if (distance <= maxRange) {
+					// Test if circle intersects line and begin recording search spaces
+					if (distance <= maxRange * 3) {
 						
 						SearchSpace newSpace = new SearchSpace(i);
 						bool inRange = false;
 						// Iterate through the segment, testing each point to check if it's in range
-						for (float t = 0; t <= 1; t += 0.001f) {
+						for (float t = 0; t <= 1; t += timeStep) {
 							
-							Vector3 curvePoint = bezierInterpolate(time, i);
-							float distace = Vector3.Distance(transform.position, curvePoint);
+							Vector3 curvePoint = bezierInterpolate(t, i);
+							float curvePointDistance = Vector3.Distance(transform.position, curvePoint);
 							
-							if (!inRange && distace >= minRange && distace <= maxRange) {
+							if (!inRange && curvePointDistance >= minRange && curvePointDistance <= maxRange) {
 								
 								newSpace.start = t;
 								inRange = true;
 							}
-							else if (inRange && (distace < minRange || distace > maxRange)) {
+							else if (inRange && (curvePointDistance < minRange || curvePointDistance > maxRange)) {
 								
 								newSpace.end = t;
 								searchSpace.Add(newSpace);
@@ -80,6 +89,7 @@ public class TowerShooting : MonoBehaviour {
 			}
 		}
 		this.searchSpace = searchSpace.ToArray();
+		GameObject.FindGameObjectWithTag("GameController").GetComponent<SpawnSystem>().updateGraph();
 		
 		// Temporary, until the Targetting system is complete
 		GameObject control = GameObject.FindGameObjectWithTag("GameController");
@@ -113,7 +123,46 @@ public class TowerShooting : MonoBehaviour {
 			Vector3 centre = transform.position;
 			centre.z = 0;
 			
-			// For each point along path
+			// For each search space
+			foreach (SearchSpace searchSpace in this.searchSpace) {
+				
+				// Iterate over curve segment
+				for (float t = searchSpace.start; t <= searchSpace.end; t += timeStep) {
+					
+					Vector3 point = enemy.positionAt(t);
+					
+					// Time for projectile to reach point
+					float projectileTime = Vector3.Distance(spawn.transform.position, point) / projectileSpeed;
+					
+					// Enemy's position after a time lapse of projectileTime
+					if (!enemy.realTimeBoundsTest(projectileTime)) break;
+					Vector3 position = enemy.timeLapse(projectileTime);
+					
+					// Enemy's position is close to point on curve
+					if (Vector3.Distance(position, point) <= tolerance) {
+						
+						// Rotate to face point
+						point.z = centre.z;
+						transform.rotation = Quaternion.LookRotation(point - centre, transform.up);
+						
+						// Fire if possible
+						if (this.time <= 0) {
+						
+							//GameObject shot = (GameObject) Instantiate(projectile, spawn.transform.position, projectile.transform.rotation);
+							GameObject shot = (GameObject) Instantiate(projectile, spawn.transform.position, Quaternion.LookRotation(point - transform.position, transform.up));
+							shot.GetComponent<Projectile>().initialise(this, point, projectileSpeed, damage);
+							this.time = cooldown;
+						}
+						else {
+							
+							this.time -= Time.deltaTime;
+						}
+						return;
+					}
+				}
+			}
+			
+			/*// For each point along path
 			for (float time = 0; true; time += timeStep) {
 				
 				if (!enemy.pathBoundsTest(time)) break;
@@ -121,10 +170,6 @@ public class TowerShooting : MonoBehaviour {
 				
 				// Time for projectile to reach point on curve
 				float projectileTime = Vector3.Distance(spawn.transform.position, point) / projectileSpeed;
-				
-				// Check if projectile can reach point in around the same time as  enemy
-				/*if (projectileTime >= time - (time * tolerance) &&
-					projectileTime <= time + (time * tolerance)) {*/
 				
 				// enemy's position after a time lapse of projectileTime
 				if (!enemy.realTimeBoundsTest(projectileTime)) break;
@@ -151,7 +196,7 @@ public class TowerShooting : MonoBehaviour {
 					}
 					return;
 				}
-			}
+			}*/
 		}
 	}
 	
@@ -162,6 +207,7 @@ public class TowerShooting : MonoBehaviour {
 	
 	private Vector3 bezierInterpolate(float time, int offset) {
 		
+		Vector3[][] path = GameObject.FindGameObjectWithTag("GameController").GetComponent<Level>().path;
 		List<Vector3> points = new List<Vector3>(path[offset]);
 		if (path.Length - offset > 1) points.Add(path[offset + 1][0]);
 		
@@ -180,6 +226,26 @@ public class TowerShooting : MonoBehaviour {
 		}
 		
 		return new Vector3(x, y, z);
+	}
+	
+	private float getBinCoeff(float N, float K)
+	{
+	   // This function gets the total number of unique combinations based upon N and K.
+	   // N is the total number of items.
+	   // K is the size of the group.
+	   // Total number of unique combinations = N! / ( K! (N - K)! ).
+	   // This function is less efficient, but is more likely to not overflow when N and K are large.
+	   // Taken from:  http://blog.plover.com/math/choose.html
+	   //
+	   float r = 1;
+	   float d;
+	   if (K > N) return 0;
+	   for (d = 1; d <= K; d++)
+	   {
+	      r *= N--;
+	      r /= d;
+	   }
+	   return r;
 	}
 }
 
