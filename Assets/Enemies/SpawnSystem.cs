@@ -11,6 +11,21 @@ public class SpawnSystem : MonoBehaviour {
 		
 		
 	}
+	
+	public void updateGraph() {
+		
+		Vector3[][] path = GameObject.FindGameObjectWithTag("GameController").GetComponent<Level>().path;
+		float[] distributionGraph = new float[path.Length];
+		
+		foreach (GameObject tower in GameObject.FindGameObjectWithTag("GameController").GetComponent<Level>().currentTowers) {
+			
+			TowerShooting towerScript = tower.GetComponent<TowerShooting>();
+			if (towerScript != null) {
+				
+				
+			}
+		}
+	}
 }
 
 

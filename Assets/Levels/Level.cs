@@ -3,7 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Level : MonoBehaviour {
-
+	
+	public Vector3[][] path;
+	
 	// Avaliable enemy/tower lists
 	public GameObject[] avaliableEnemies;
 	public GameObject[] avaliableTowers;
@@ -14,6 +16,11 @@ public class Level : MonoBehaviour {
 	
 	// Currently selected tower area
 	GameObject selectedArea;
+	
+	public void registerPaths() {
+		
+		path = GameObject.FindGameObjectWithTag("Path").GetComponent<Path>().path;
+	}
 	
 	void Update() {
 		

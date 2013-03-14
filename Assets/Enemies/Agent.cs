@@ -9,8 +9,8 @@ public class Agent : MonoBehaviour {
 	public float speed = 3;
 	
 	bool ready = false;
-	List<List<Vector3>> path;
-	List<Vector3> currentPoint;
+	Vector3[][] path;
+	int currentPoint;
 	float distance;
 	float time;
 	
@@ -18,38 +18,32 @@ public class Agent : MonoBehaviour {
 		
 		if (pathContainer != null) {
 			
-			Path pathScript = pathContainer.GetComponent<Path>();
-			if (pathScript != null) {
+			path = pathContainer.GetComponent<Path>().path;
+			if (path != null) {
 				
-				pathScript.buildPath();
-				if (pathScript.path != null) {
-					
-					path = pathScript.path;
-					currentPoint = path[0];
-					path.Remove(currentPoint);
-					time = 0;
-					if (path.Count > 0) distance = approximateDistance();
-					ready = true;
-				}
+				currentPoint = 0;
+				time = 0;
+				if (path.Length - currentPoint > 1) distance = approximateDistance();
+				ready = true;
 			}
 		}
 	}
 	
 	void Update() {
 		
-		if (ready && path.Count > 0) {
+		if (ready && path.Length - currentPoint > 1) {
 			
+			// Add in time overstep thingy here to help smoothen transition between segments
 			time += (speed * Time.deltaTime) / distance;
 			transform.position = bezierInterpolate();
 			//transform.LookAt(bezierInterpolate(time + 0.001f));
 			// Force sprite to look at camera.
 			
-			if (transform.position == path[0][0]) {
+			if (transform.position == path[currentPoint + 1][0]) {
 				
-				currentPoint = path[0];
-				path.Remove(currentPoint);
+				currentPoint++;
 				time = 0;
-				if (path.Count > 0) distance = approximateDistance();
+				if (path.Length - currentPoint > 1) distance = approximateDistance();
 			}
 		}
 	}
@@ -66,17 +60,8 @@ public class Agent : MonoBehaviour {
 	
 	private Vector3 bezierInterpolate(float time, int offset) {
 		
-		List<Vector3> points = new List<Vector3>();
-		if (offset == 0) {
-			
-			points = new List<Vector3>(currentPoint);
-			if (path.Count >= 0) points.Add(path[0][0]);
-		}
-		else {
-			
-			points = new List<Vector3>(path[offset - 1]);
-			if (path.Count >= offset) points.Add(path[offset][0]);
-		}
+		List<Vector3> points = new List<Vector3>(path[currentPoint + offset]);
+		if (path.Length - currentPoint - offset > 1) points.Add(path[currentPoint + offset + 1][0]);
 		
 		if (time > 1) time = 1;
 		else if (time < 0) time = 0;
@@ -151,20 +136,17 @@ public class Agent : MonoBehaviour {
 	
 	public void respawn() {
 		
-		Path pathScript = pathContainer.GetComponent<Path>();
-			if (pathScript != null) {
+		if (pathContainer != null) {
+			
+			path = pathContainer.GetComponent<Path>().path;
+			if (path != null) {
 				
-				pathScript.buildPath();
-				if (pathScript.path != null) {
-					
-					path = pathScript.path;
-					currentPoint = path[0];
-					path.Remove(currentPoint);
-					time = 0;
-					if (path.Count > 0) distance = approximateDistance();
-					ready = true;
-				}
+				currentPoint = 0;
+				time = 0;
+				if (path.Length - currentPoint > 1) distance = approximateDistance();
+				ready = true;
 			}
+		}
 	}
 	
 	/*public bool canHit(float time) {
@@ -204,7 +186,7 @@ public class Agent : MonoBehaviour {
 			segmentsCrossedOver++;
 		}
 		
-		if (segmentsCrossedOver < path.Count) return true;
+		if (segmentsCrossedOver < path.Length - currentPoint) return true;
 		else return false;
 	}
 	
@@ -217,7 +199,7 @@ public class Agent : MonoBehaviour {
 		while (bTime > 1) {
 			
 			bTime = bTime - 1;
-			if (segmentsCrossedOver++ >= path.Count) return false;
+			if (segmentsCrossedOver++ >= path.Length - currentPoint) return false;
 			
 			//bTime -= this.time;
 			time = (bTime * distance) / speed;
