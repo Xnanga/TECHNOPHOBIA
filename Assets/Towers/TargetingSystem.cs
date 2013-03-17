@@ -12,7 +12,7 @@ public class TargetingSystem : MonoBehaviour {
 		updatePossibleTargetList();
 		updatePriorityList();
 		
-		foreach (GameObject tower in gameObject.GetComponent<Level>().currentTowers) {
+		foreach (GameObject tower in GetComponent<Level>().currentTowers) {
 			
 			TowerShooting towerScript = tower.GetComponent<TowerShooting>();
 			if (towerScript != null) {
@@ -55,7 +55,7 @@ public class TargetingSystem : MonoBehaviour {
 		
 		possibleTargets.Clear();
 		
-		foreach (GameObject tower in gameObject.GetComponent<Level>().currentTowers) {
+		foreach (GameObject tower in GetComponent<Level>().currentTowers) {
 			
 			TowerShooting towerScript = tower.GetComponent<TowerShooting>();
 			if (towerScript != null) {
@@ -69,25 +69,23 @@ public class TargetingSystem : MonoBehaviour {
 		
 		priorityList.Clear();
 		
-		foreach (GameObject enemy in gameObject.GetComponent<Level>().currentEnemies) {
+		foreach (GameObject enemy in GetComponent<Level>().currentEnemies) {
 			
 			float health = enemy.GetComponent<Health>().health;
 			float speed = enemy.GetComponent<Agent>().speed;
 			
 			int segment = enemy.GetComponent<Agent>().currentPoint;
 			float t = enemy.GetComponent<Agent>().time;
-			Vector3[][] path = gameObject.GetComponent<Level>().path;
+			Vector3[][] path = GetComponent<Level>().path;
 			float distanceFromEnd = (path.Length - segment - 1) + (1 - t);
 			
-			float timeStep = gameObject.GetComponent<SpawnSystem>().timeStep;
-			//float fdistroGraphSize = path.Length / timeStep;
-			//int distroGraphSize = (int) fdistroGraphSize;
-			int towerCentre = gameObject.GetComponent<SpawnSystem>().towerCentre;
+			float timeStep = GetComponent<SpawnSystem>().timeStep;
+			int towerCentre = GetComponent<SpawnSystem>().towerCentre;
 			float fdistance = (segment * (1 / timeStep)) + (t / timeStep);
 			int distance = (int) fdistance;
-			int distanceFromCentre = towerCentre - distance;
+			int distanceFromCentre = distance - towerCentre;
 			
-			float priority = (distanceFromEnd * 10) + (health) + (speed * 50) + distanceFromCentre;
+			float priority = (distanceFromEnd * 100) + (health * 30) + (speed * 30) + (distanceFromCentre * 20);
 			
 			priorityList.Add(enemy, priority);
 		}

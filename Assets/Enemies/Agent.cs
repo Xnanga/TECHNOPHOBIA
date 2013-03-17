@@ -49,7 +49,9 @@ public class Agent : MonoBehaviour {
 				return;
 			}
 			
-			transform.position = bezierInterpolate();
+			Vector3 position = bezierInterpolate();
+			position.z = transform.position.z;
+			transform.position = position;
 			//transform.LookAt(bezierInterpolate(time + 0.001f));
 			// Force sprite to look at camera.
 			

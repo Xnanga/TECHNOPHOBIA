@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class TowerShooting : MonoBehaviour {
 	
 	public float damage;
+	public bool penetration;
 	public float minRange = 0;
 	public float maxRange;
 	public GameObject target;
@@ -150,7 +151,7 @@ public class TowerShooting : MonoBehaviour {
 						
 							//GameObject shot = (GameObject) Instantiate(projectile, spawn.transform.position, projectile.transform.rotation);
 							GameObject shot = (GameObject) Instantiate(projectile, spawn.transform.position, Quaternion.LookRotation(point - transform.position, transform.up));
-							shot.GetComponent<Projectile>().initialise(this, point, projectileSpeed, damage);
+							shot.GetComponent<Projectile>().initialise(this, point, projectileSpeed, damage, penetration);
 							this.time = cooldown;
 						}
 						else {
@@ -161,42 +162,6 @@ public class TowerShooting : MonoBehaviour {
 					}
 				}
 			}
-			
-			/*// For each point along path
-			for (float time = 0; true; time += timeStep) {
-				
-				if (!enemy.pathBoundsTest(time)) break;
-				Vector3 point = enemy.positionAt(time);
-				
-				// Time for projectile to reach point on curve
-				float projectileTime = Vector3.Distance(spawn.transform.position, point) / projectileSpeed;
-				
-				// enemy's position after a time lapse of projectileTime
-				if (!enemy.realTimeBoundsTest(projectileTime)) break;
-				Vector3 position = enemy.timeLapse(projectileTime);
-				
-				// Enemy's position is close to point on curve
-				if (Vector3.Distance(position, point) <= tolerance) {
-					
-					// Rotate to face point
-					point.z = centre.z;
-					transform.rotation = Quaternion.LookRotation(point - centre, transform.up);
-					
-					// Fire if possible
-					if (this.time <= 0) {
-					
-						//GameObject shot = (GameObject) Instantiate(projectile, spawn.transform.position, projectile.transform.rotation);
-						GameObject shot = (GameObject) Instantiate(projectile, spawn.transform.position, Quaternion.LookRotation(point - transform.position, transform.up));
-						shot.GetComponent<Projectile>().initialise(this, point, projectileSpeed, damage);
-						this.time = cooldown;
-					}
-					else {
-						
-						this.time -= Time.deltaTime;
-					}
-					return;
-				}
-			}*/
 		}
 	}
 	

@@ -1,25 +1,26 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Levels\Level.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Enemies\SpawnSystem.cs">
     <Files>
-      <File FileName="Assets\Levels\Level.cs" Line="48" Column="48" />
-      <File FileName="Assets\Enemies\SpawnSystem.cs" Line="1" Column="1" />
+      <File FileName="Assets\Enemies\SpawnSystem.cs" Line="74" Column="31" />
+      <File FileName="Assets\Towers\TowerArea.cs" Line="1" Column="1" />
+      <File FileName="Assets\Levels\Level.cs" Line="1" Column="1" />
       <File FileName="Assets\Towers\TargetingSystem.cs" Line="1" Column="1" />
       <File FileName="Assets\Enemies\Agent.cs" Line="1" Column="1" />
       <File FileName="Assets\Towers\Projectile.cs" Line="1" Column="1" />
       <File FileName="Assets\Enemies\Health.cs" Line="1" Column="1" />
       <File FileName="Assets\Towers\TowerShooting.cs" Line="1" Column="1" />
-      <File FileName="Assets\Towers\TowerArea.cs" Line="1" Column="1" />
+      <File FileName="Assets\Enemies\SpawnPoint.cs" Line="1" Column="1" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="Assembly-CSharp" expanded="True">
             <Node name="Assets" expanded="True">
-              <Node name="Enemies" expanded="True" />
-              <Node name="Levels" expanded="True">
-                <Node name="Level.cs" selected="True" />
+              <Node name="Enemies" expanded="True">
+                <Node name="SpawnSystem.cs" selected="True" />
               </Node>
+              <Node name="Levels" expanded="True" />
               <Node name="Towers" expanded="True" />
             </Node>
           </Node>
@@ -29,7 +30,11 @@
         <State expanded="True" selected="True" />
       </Pad>
       <Pad Id="MonoDevelop.Debugger.WatchPad">
-        <State />
+        <State>
+          <Value>position</Value>
+          <Value>this.zLevel</Value>
+          <Value>enemy.transform.position</Value>
+        </State>
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>

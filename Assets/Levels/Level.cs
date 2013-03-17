@@ -45,6 +45,6 @@ public class Level : MonoBehaviour {
 	public void reportDead(GameObject enemy) {
 		
 		currentEnemies.Remove(enemy);
-		gameObject.GetComponent<SpawnSystem>().update(enemy);
+		GetComponent<SpawnSystem>().update(enemy);
 	}
 }

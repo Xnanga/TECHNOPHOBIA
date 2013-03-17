@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class SpawnSystem : MonoBehaviour {
 
@@ -13,27 +14,90 @@ public class SpawnSystem : MonoBehaviour {
 	
 	void Start() {
 		
-		// Spawn initial wave
+		// If there's only one enemy type, spawn five of it
+		if (GetComponent<Level>().avaliableEnemies.Length == 1) {
+			
+			GameObject enemy = GetComponent<Level>().avaliableEnemies[0];
+			List<SpawnQueueEntry> spawnQueue = new List<SpawnQueueEntry>();
+			for (int i = 0; i < 5; i++)
+				spawnQueue.Add(new SpawnQueueEntry(enemy, Random.Range(1.5f + 0.7f * i, 3.2f + 0.7f * i)));
+			spawnPoint.GetComponent<SpawnPoint>().spawnQueue = spawnQueue;
+			spawnPoint.GetComponent<SpawnPoint>().zLevel = 0;
+		}
+		// Else spawn three of any weak/fast enemies and two stronger ones
+		else {
+			
+			// Find weakest and second strongest (unless there are only two) enemy
+			float minValue = Mathf.Infinity;
+			float maxValue = 0;
+			GameObject weakest = null, strongest = null, second = null;
+			foreach (GameObject enemy in GetComponent<Level>().avaliableEnemies) {
+				
+				float speed = enemy.GetComponent<Agent>().speed;
+				float health = enemy.GetComponent<Health>().maxHealth;
+				float score = speed + health;
+				
+				if (score < minValue) {
+					
+					minValue = score;
+					weakest = enemy;
+				}
+				
+				if (score > maxValue) {
+					
+					maxValue = score;
+					if (strongest != null) second = strongest;
+					strongest = enemy;
+				}
+			}
+			
+			// If there's only two enemies then use strongest instead
+			if (second == weakest) second = strongest;
+			
+			List<GameObject> enemyList = new List<GameObject> { weakest, weakest, weakest, second, second };
+			List<SpawnQueueEntry> spawnQueue = new List<SpawnQueueEntry>();
+			for (int i = 0; i < 5; i++) {
+				
+				int rnd = Random.Range(0, enemyList.Count);
+				float time = Random.Range(1.5f + 0.7f * i, 3.2f + 0.7f * i);
+				spawnQueue.Add(new SpawnQueueEntry(enemyList[rnd], time));
+				enemyList.RemoveAt(rnd);
+			}
+			
+			spawnPoint.GetComponent<SpawnPoint>().spawnQueue = spawnQueue;
+			spawnPoint.GetComponent<SpawnPoint>().zLevel = 0;
+		}
 	}
 	
 	public void update(GameObject enemy) {
 		
-		// Called when an enemy dies
-		// Evaluate enemy's position on the distroGraph
-		// Increment/Decrement performance rating appropriately
+		int segment = enemy.GetComponent<Agent>().currentPoint;
+		float t = enemy.GetComponent<Agent>().time;
+		float index = (segment * (1/ timeStep)) + (t / timeStep);
 		
-		// If all enemies are dead
-		// Design new wave
-		// Send new wave data to spawn points
+		int distance = towerCentre - (int) index;
+		
+		playerPerformance += distance;
+		
+		if (Random.value < 0.05) {
+			
+			// Spawn new enemy
+		}
+		
+		if (GetComponent<Level>().currentEnemies.Count == 0) {
+			
+			// Design new wave
+			// Send queue to spawn point
+		}
 	}
 	
 	public void updateGraph() { // Called when tower arrangement is changed
 		
-		Vector3[][] path = gameObject.GetComponent<Level>().path;
+		Vector3[][] path = GetComponent<Level>().path;
 		float size = path.Length / timeStep;
 		distributionGraph = new int[(int) size];
 		
-		foreach (GameObject tower in gameObject.GetComponent<Level>().currentTowers) {
+		foreach (GameObject tower in GetComponent<Level>().currentTowers) {
 			
 			TowerShooting towerScript = tower.GetComponent<TowerShooting>();
 			if (towerScript != null) {
@@ -52,23 +116,6 @@ public class SpawnSystem : MonoBehaviour {
 			}
 		}
 		calculateTowerCentre();
-		
-		/*// Calculate standard deviation
-		
-		// Find mean
-		float sum = 0;
-		for (int i = 0; i < distributionGraph.Length; i++)
-			sum += distributionGraph[i];
-		float mean = sum / distributionGraph.Length;
-		
-		// Sum of the differenes from the mean squared
-		sum = 0;
-		for (int i = 0; i < distributionGraph.Length; i++)
-			sum += Mathf.Pow(distributionGraph[i] - mean, 2);
-		
-		// Square root of the mean of the above
-		float standardDeviation = Mathf.Sqrt(sum / distributionGraph.Length);
-		int asd = 0;*/
 	}
 	
 	void calculateTowerCentre() {
@@ -101,11 +148,6 @@ public class SpawnSystem : MonoBehaviour {
 		
 		towerCentre = (index + (index + plateuLength)) / plateuLength;
 	}
-	
-	void rateEnemies() {
-		
-		
-	}
 }
 
 
@@ -113,4 +155,10 @@ public class SpawnQueueEntry {
 	
 	public GameObject enemy;
 	public float time;
+	
+	public SpawnQueueEntry(GameObject enemy, float time) {
+		
+		this.enemy = enemy;
+		this.time = time;
+	}
 }
