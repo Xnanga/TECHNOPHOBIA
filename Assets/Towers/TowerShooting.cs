@@ -62,12 +62,12 @@ public class TowerShooting : MonoBehaviour {
 							Vector3 curvePoint = bezierInterpolate(t, i);
 							float curvePointDistance = Vector3.Distance(transform.position, curvePoint);
 							
-							if (!inRange && curvePointDistance >= minRange && curvePointDistance <= maxRange) {
+							if (!inRange && curvePointDistance >= minRange && curvePointDistance <= maxRange * 3) {
 								
 								newSpace.start = t;
 								inRange = true;
 							}
-							else if (inRange && (curvePointDistance < minRange || curvePointDistance > maxRange)) {
+							else if (inRange && (curvePointDistance < minRange || curvePointDistance > maxRange * 3)) {
 								
 								newSpace.end = t;
 								searchSpace.Add(newSpace);

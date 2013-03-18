@@ -18,11 +18,14 @@ public class SpawnPoint : MonoBehaviour {
 			if (entry.time <= 0) {
 				
 				Vector3 position = new Vector3(transform.position.x, transform.position.y, transform.position.z + (0.1f * zLevel));
-				GameObject enemy = (GameObject) Instantiate(entry.enemy, position, entry.enemy.transform.rotation);
-				GameObject.FindGameObjectWithTag("GameController").GetComponent<Level>().currentEnemies.Add(enemy);
-				enemy.GetComponent<Agent>().pathContainer = pathContainer;
-				toBeRemoved.Add(entry);
-				zLevel--;
+				if (entry.enemy != null) {
+					
+					GameObject enemy = (GameObject) Instantiate(entry.enemy, position, entry.enemy.transform.rotation);
+					GameObject.FindGameObjectWithTag("GameController").GetComponent<Level>().currentEnemies.Add(enemy);
+					enemy.GetComponent<Agent>().pathContainer = pathContainer;
+					toBeRemoved.Add(entry);
+					if (zLevel++ == 5) zLevel = 0;
+				}
 			}
 		}
 		
