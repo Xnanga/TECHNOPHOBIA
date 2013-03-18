@@ -25,7 +25,7 @@ public class SpawnSystem : MonoBehaviour {
 			GameObject enemy = GetComponent<Level>().avaliableEnemies[0];
 			List<SpawnQueueEntry> spawnQueue = new List<SpawnQueueEntry>();
 			for (int i = 0; i < 5; i++)
-				spawnQueue.Add(new SpawnQueueEntry(enemy, Random.Range(1.5f + 0.5f * i, 2.2f + 0.5f * i)));
+				spawnQueue.Add(new SpawnQueueEntry(enemy, Random.Range(1.5f + 0.7f * i, 2.2f + 0.7f * i)));
 			spawnPoint.GetComponent<SpawnPoint>().spawnQueue.AddRange(spawnQueue);
 		}
 		// Else spawn three of any weak/fast enemies and two stronger ones
@@ -63,7 +63,7 @@ public class SpawnSystem : MonoBehaviour {
 			for (int i = 0; i < 5; i++) {
 				
 				int rnd = Random.Range(0, enemyList.Count);
-				float time = Random.Range(1.5f + 0.5f * i, 2.2f + 0.5f * i);
+				float time = Random.Range(1.5f + 0.7f * i, 2.2f + 0.7f * i);
 				spawnQueue.Add(new SpawnQueueEntry(enemyList[rnd], time));
 				enemyList.RemoveAt(rnd);
 			}
@@ -85,7 +85,7 @@ public class SpawnSystem : MonoBehaviour {
 		
 		playerPerformance += distance;
 		
-		if (Random.value < -0.4) {
+		if (Random.value < 0.4) {
 			
 			// Spawn new enemy
 			float max = 0;
@@ -100,7 +100,7 @@ public class SpawnSystem : MonoBehaviour {
 				if (rnd < consecutiveScore) {
 					
 					// Spawn it!
-					float time = Random.Range(1.5f + 0.5f * spawnDispersion, 2.2f + 0.5f * spawnDispersion);
+					float time = Random.Range(1.5f + 0.7f * spawnDispersion, 2.2f + 0.7f * spawnDispersion);
 					spawnPoint.GetComponent<SpawnPoint>().spawnQueue.Add(new SpawnQueueEntry(thing, time));
 					if (spawnDispersion++ == 5) spawnDispersion = 0;
 					break;
@@ -135,9 +135,9 @@ public class SpawnSystem : MonoBehaviour {
 					if (rnd < consecutiveScore) {
 						
 						// Spawn it!
-						float time = Random.Range(1.5f + 0.5f * spawnDispersion, 2.2f + 0.5f * spawnDispersion);
+						float time = Random.Range(1.5f + 0.7f * spawnDispersion, 2.2f + 0.7f * spawnDispersion);
 						spawnPoint.GetComponent<SpawnPoint>().spawnQueue.Add(new SpawnQueueEntry(thing, time));
-						if (spawnDispersion++ == 5) spawnDispersion = 0;
+						if (spawnDispersion++ == 15) spawnDispersion = 0;
 						break;
 					}
 				}

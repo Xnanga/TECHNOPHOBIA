@@ -162,6 +162,11 @@ public class TowerShooting : MonoBehaviour {
 					}
 				}
 			}
+			
+			
+			Vector3 pos = target.transform.position;
+			pos.z = centre.z;
+			transform.rotation = Quaternion.LookRotation(pos - centre, transform.up);
 		}
 	}
 	

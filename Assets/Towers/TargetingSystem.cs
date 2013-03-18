@@ -85,7 +85,7 @@ public class TargetingSystem : MonoBehaviour {
 			int distance = (int) fdistance;
 			int distanceFromCentre = distance - towerCentre;
 			
-			float priority = (distanceFromEnd * 100) + (health * 30) + (speed * 30) + (distanceFromCentre * 20);
+			float priority = (distanceFromEnd * 200) + (health * 30) + (speed * 30) + (distanceFromCentre * 20);
 			
 			priorityList.Add(enemy, priority);
 		}

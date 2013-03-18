@@ -50,6 +50,7 @@
      <Compile Include="Assets\Enemies\SpawnPoint.cs" />
      <Compile Include="Assets\Enemies\SpawnSystem.cs" />
      <Compile Include="Assets\Enemies\SpriteManager.cs" />
+     <Compile Include="Assets\GameData.cs" />
      <Compile Include="Assets\Levels\Level.cs" />
      <Compile Include="Assets\Levels\Resources\OutsideLevel\Standard Assets\Character Controllers\Sources\Scripts\MouseLook.cs" />
      <Compile Include="Assets\Towers\Projectile.cs" />
