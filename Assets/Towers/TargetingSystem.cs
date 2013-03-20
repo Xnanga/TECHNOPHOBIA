@@ -68,6 +68,8 @@ public class TargetingSystem : MonoBehaviour {
 	private void updatePriorityList() {
 		
 		priorityList.Clear();
+		List<GameObject> nearEnd = new List<GameObject>();
+		float total = 0;
 		
 		foreach (GameObject enemy in GetComponent<Level>().currentEnemies) {
 			
@@ -85,9 +87,16 @@ public class TargetingSystem : MonoBehaviour {
 			int distance = (int) fdistance;
 			int distanceFromCentre = distance - towerCentre;
 			
-			float priority = (distanceFromEnd * 200) + (health * 30) + (speed * 30) + (distanceFromCentre * 20);
+			if (segment == path.Length - 1)
+				nearEnd.Add(enemy);
+			
+			float priority = (distanceFromEnd * 150) + (health * 30) + (speed * 30) + (distanceFromCentre * 20);
+			total += priority;
 			
 			priorityList.Add(enemy, priority);
 		}
+		
+		foreach (GameObject enemy in nearEnd)
+			priorityList[enemy] += total;
 	}
 }

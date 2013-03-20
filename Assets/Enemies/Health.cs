@@ -5,6 +5,8 @@ public class Health : MonoBehaviour {
 
 	public float maxHealth;
 	public float health;
+	public int scrap;
+	public int score;
 	
 	void Start() {
 		
@@ -28,6 +30,8 @@ public class Health : MonoBehaviour {
 		
 		Destroy(gameObject);
 		GameObject.FindGameObjectWithTag("GameController").GetComponent<Level>().reportDead(gameObject);
+		GameObject.FindGameObjectWithTag("GameData").GetComponent<GameData>().scrap += scrap;
+		GameObject.FindGameObjectWithTag("GameData").GetComponent<GameData>().score += score;
 		// Spawn scrap
 		// Alert Level and Targetting Systems
 	}

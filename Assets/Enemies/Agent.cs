@@ -7,6 +7,7 @@ public class Agent : MonoBehaviour {
 
 	public GameObject pathContainer;
 	public float speed = 3;
+	public int score;
 	
 	bool ready = false;
 	Vector3[][] path;
@@ -45,12 +46,19 @@ public class Agent : MonoBehaviour {
 			if (currentPoint == path.Length - 1) {
 				
 				GameObject.FindGameObjectWithTag("GameController").GetComponent<Level>().reportDead(gameObject);
+				GameObject.FindGameObjectWithTag("GameData").GetComponent<GameData>().score -= score;
+				if (--GameObject.FindGameObjectWithTag("GameData").GetComponent<GameData>().playerHealth == 0) {
+					
+					// game over
+					Application.LoadLevel("End");
+				}
 				Destroy(gameObject);
 				return;
 			}
 			
 			Vector3 position = bezierInterpolate();
-			position.z = transform.position.z;
+			//position.z = transform.position.z;
+			position.y = transform.position.y;
 			transform.position = position;
 			//transform.LookAt(bezierInterpolate(time + 0.001f));
 			// Force sprite to look at camera.
@@ -63,6 +71,11 @@ public class Agent : MonoBehaviour {
 					
 					GameObject.FindGameObjectWithTag("GameController").GetComponent<Level>().reportDead(gameObject);
 					Destroy(gameObject);
+					if (--GameObject.FindGameObjectWithTag("GameData").GetComponent<GameData>().playerHealth == 0) {
+						
+						// game over
+						Application.LoadLevel("End");
+					}
 					return;
 				}
 				if (path.Length - currentPoint > 1) distance = approximateDistance();

@@ -17,9 +17,20 @@ public class Level : MonoBehaviour {
 	// Currently selected tower area
 	GameObject selectedArea;
 	
+	// Level ending logic
+	public string nextLevel;
+	public int waveCount;
+	public int currentWave = 1;
+	public int scrap;
+	
 	public void registerPaths() {
 		
 		path = GameObject.FindGameObjectWithTag("Path").GetComponent<Path>().path;
+	}
+	
+	void Start () {
+		
+		GameObject.FindGameObjectWithTag("GameData").GetComponent<GameData>().scrap += scrap;
 	}
 	
 	void Update() {

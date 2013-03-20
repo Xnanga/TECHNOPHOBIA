@@ -17,7 +17,7 @@ public class SpawnPoint : MonoBehaviour {
 			entry.time -= Time.deltaTime;
 			if (entry.time <= 0) {
 				
-				Vector3 position = new Vector3(transform.position.x, transform.position.y, transform.position.z + (0.1f * zLevel));
+				Vector3 position = new Vector3(transform.position.x, transform.position.y + (0.1f * zLevel), transform.position.z);
 				if (entry.enemy != null) {
 					
 					GameObject enemy = (GameObject) Instantiate(entry.enemy, position, entry.enemy.transform.rotation);

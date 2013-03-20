@@ -18,7 +18,7 @@
 	<DebugType>full</DebugType>
 	<Optimize>false</Optimize>
 	<OutputPath>Temp\bin\Debug\</OutputPath>
-	<DefineConstants>DEBUG;TRACE;UNITY_3_5_7;UNITY_3_5;UNITY_EDITOR;ENABLE_PROFILER;UNITY_STANDALONE_WIN;ENABLE_GENERICS;ENABLE_DUCK_TYPING;ENABLE_TERRAIN;ENABLE_MOVIES;ENABLE_WEBCAM;ENABLE_MICROPHONE;ENABLE_NETWORK;ENABLE_CLOTH;ENABLE_WWW;ENABLE_SUBSTANCE</DefineConstants>
+	<DefineConstants>DEBUG;TRACE;UNITY_3_5_7;UNITY_3_5;UNITY_EDITOR;ENABLE_PROFILER;UNITY_WEBPLAYER;ENABLE_GENERICS;ENABLE_DUCK_TYPING;ENABLE_TERRAIN;ENABLE_MOVIES;ENABLE_WEBCAM;ENABLE_MICROPHONE;ENABLE_NETWORK;ENABLE_CLOTH;ENABLE_WWW;ENABLE_SUBSTANCE</DefineConstants>
 	<ErrorReport>prompt</ErrorReport>
 	<WarningLevel>4</WarningLevel>
 	<NoWarn>0169</NoWarn>
@@ -50,11 +50,17 @@
      <Compile Include="Assets\Enemies\SpawnPoint.cs" />
      <Compile Include="Assets\Enemies\SpawnSystem.cs" />
      <Compile Include="Assets\Enemies\SpriteManager.cs" />
-     <Compile Include="Assets\GameData.cs" />
+     <Compile Include="Assets\Levels\GameData.cs" />
+     <Compile Include="Assets\Levels\HUD.cs" />
      <Compile Include="Assets\Levels\Level.cs" />
      <Compile Include="Assets\Levels\Resources\OutsideLevel\Standard Assets\Character Controllers\Sources\Scripts\MouseLook.cs" />
+     <Compile Include="Assets\Menu\Music.cs" />
+     <Compile Include="Assets\Menu\SoundManager.cs" />
+     <Compile Include="Assets\Menu\end.cs" />
+     <Compile Include="Assets\Menu\mainMenu.cs" />
      <Compile Include="Assets\Towers\Projectile.cs" />
      <Compile Include="Assets\Towers\TargetingSystem.cs" />
+     <Compile Include="Assets\Towers\Tower.cs" />
      <Compile Include="Assets\Towers\TowerArea.cs" />
      <Compile Include="Assets\Towers\TowerShooting.cs" />
      <None Include="Assets\Levels\Resources\DiningRoom\Hard Surface Free\HardSurface Shaders\HardSurface Free Transparent.shader" />

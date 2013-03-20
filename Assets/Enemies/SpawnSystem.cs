@@ -3,11 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class SpawnSystem : MonoBehaviour {
-
+	
+	public int limit = 100;
 	public GameObject spawnPoint;
 	public float timeStep = 0.05f;
 	public float selectedDifficulty = 0.5f;
 	public float playerPerformance;
+	public float maxPerformance;
 	
 	Dictionary<GameObject, float> enemyScores = new Dictionary<GameObject, float>();
 	int spawnDispersion;
@@ -17,6 +19,7 @@ public class SpawnSystem : MonoBehaviour {
 	
 	void Start() {
 		
+		GameObject.FindGameObjectWithTag("GameData").GetComponent<GameData>().difficulty = selectedDifficulty;
 		rateEnemies();
 		
 		// If there's only one enemy type, spawn five of it
@@ -84,8 +87,9 @@ public class SpawnSystem : MonoBehaviour {
 		int distance = towerCentre - (int) index;
 		
 		playerPerformance += distance;
+		maxPerformance += towerCentre;
 		
-		if (Random.value < 0.4) {
+		if (Random.value < 0.1) {
 			
 			// Spawn new enemy
 			float max = 0;
@@ -102,23 +106,32 @@ public class SpawnSystem : MonoBehaviour {
 					// Spawn it!
 					float time = Random.Range(1.5f + 0.7f * spawnDispersion, 2.2f + 0.7f * spawnDispersion);
 					spawnPoint.GetComponent<SpawnPoint>().spawnQueue.Add(new SpawnQueueEntry(thing, time));
-					if (spawnDispersion++ == 5) spawnDispersion = 0;
+					if (++spawnDispersion == 5) spawnDispersion = 0;
 					break;
 				}
 			}
 		}
 		
-		if (GetComponent<Level>().currentEnemies.Count == 0) {
+		if (GetComponent<Level>().currentEnemies.Count == 0 &&
+			spawnPoint.GetComponent<SpawnPoint>().spawnQueue.Count == 0) {
+			
+			// Check wave count
+			if (gameObject.GetComponent<Level>().currentWave++ == gameObject.GetComponent<Level>().waveCount) {
+				
+				Application.LoadLevel(gameObject.GetComponent<Level>().nextLevel);
+				GameObject.FindGameObjectWithTag("GameData").GetComponent<GameData>().difficulty = selectedDifficulty;
+			}
 			
 			// Design new wave
 			List<SpawnQueueEntry> spawnQueue = new List<SpawnQueueEntry>();
 			
 			// Select number of enemies to spawn
-			// Random number multiplied by (performance * 1 / difficulty)
-			float modifier = Mathf.Abs(playerPerformance * Mathf.Pow(selectedDifficulty, 2));
-			float num = Random.Range(4.0f + 0.1f * modifier, 6.0f + 0.1f * modifier);
+			//float modifier = Mathf.Abs(playerPerformance * Mathf.Pow(selectedDifficulty, 2));
+			//float modifier = Mathf.Abs(1 - (1 / playerPerformance) * ((selectedDifficulty != 0) ? (1 - (1 / selectedDifficulty)) : 0));
+			float modifier = Mathf.Pow(30, selectedDifficulty);
+			float num = Random.Range(3.0f + /*0.1f */ modifier, 5.0f + /*0.1f */ modifier);
 			
-			if (num > 30) num = 30;
+			if (num > limit) num = limit;
 			
 			for (int i = 0; i < (int) num; i++) {
 				
@@ -137,7 +150,7 @@ public class SpawnSystem : MonoBehaviour {
 						// Spawn it!
 						float time = Random.Range(1.5f + 0.7f * spawnDispersion, 2.2f + 0.7f * spawnDispersion);
 						spawnPoint.GetComponent<SpawnPoint>().spawnQueue.Add(new SpawnQueueEntry(thing, time));
-						if (spawnDispersion++ == 15) spawnDispersion = 0;
+						if (++spawnDispersion == 15) spawnDispersion = 0;
 						break;
 					}
 				}
@@ -147,11 +160,10 @@ public class SpawnSystem : MonoBehaviour {
 			spawnPoint.GetComponent<SpawnPoint>().spawnQueue.AddRange(spawnQueue);
 			
 			// mutate difficulty and reset performance
-			selectedDifficulty = selectedDifficulty * (playerPerformance * 0.1f);
-			/////////////////////////////////////////////////////////////////////
-			/////////////////The above needs to be redone - it goes up infinetly
-			/////////////////////////////////////////////////////////////////////
+			if (towerCentre != 0) selectedDifficulty = 1 - (1 / (maxPerformance - Mathf.Abs(playerPerformance)));
+			else selectedDifficulty = 0;
 			playerPerformance = 0;
+			maxPerformance = 0;
 		}
 	}
 	

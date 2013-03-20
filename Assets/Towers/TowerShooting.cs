@@ -31,11 +31,11 @@ public class TowerShooting : MonoBehaviour {
 			if (path[i].Length < 2) continue;
 			
 			// For each pair of points
-			bool intersection = false;
+			//bool intersection = false;
 			for (int point = 0; point < path[i].Length - 1; point++) {
 				for (int otherPoint = point + 1; otherPoint < path[i].Length; otherPoint++) {
 					
-					Vector3 line = path[i][otherPoint] - path[i][point];
+					/*Vector3 line = path[i][otherPoint] - path[i][point];
 					Vector3 lineNormal = line.normalized;
 					Vector3 pointToCircle = transform.position - path[i][point];
 					float closestPointMagnitude = Vector3.Dot(pointToCircle, lineNormal);
@@ -52,7 +52,7 @@ public class TowerShooting : MonoBehaviour {
 					float distance = Vector3.Distance(transform.position, closestPoint);
 					
 					// Test if circle intersects line and begin recording search spaces
-					if (distance <= maxRange * 3) {
+					if (distance <= maxRange * 3) {*/
 						
 						SearchSpace newSpace = new SearchSpace(i);
 						bool inRange = false;
@@ -60,6 +60,7 @@ public class TowerShooting : MonoBehaviour {
 						for (float t = 0; t <= 1; t += timeStep) {
 							
 							Vector3 curvePoint = bezierInterpolate(t, i);
+							curvePoint.y = transform.position.y;
 							float curvePointDistance = Vector3.Distance(transform.position, curvePoint);
 							
 							if (!inRange && curvePointDistance >= minRange && curvePointDistance <= maxRange * 3) {
@@ -82,11 +83,12 @@ public class TowerShooting : MonoBehaviour {
 							searchSpace.Add(newSpace);
 						}
 						
-						break;
-					}
+						//intersection = true;
+						//break;
+					//}
 				}
 				
-				if (intersection) break;
+				//if (intersection) break;
 			}
 		}
 		this.searchSpace = searchSpace.ToArray();
@@ -104,7 +106,8 @@ public class TowerShooting : MonoBehaviour {
 			
 			// If enemy is in range
 			Vector3 point = target.transform.position;
-			point.z = transform.position.z;
+			//point.z = transform.position.z;
+			point.y = transform.position.y;
 			if (Vector3.Distance(point, transform.position) >= minRange &&
 				Vector3.Distance(point, transform.position) <= maxRange) {
 				
@@ -122,7 +125,7 @@ public class TowerShooting : MonoBehaviour {
 			
 			// Circle's centre
 			Vector3 centre = transform.position;
-			centre.z = 0;
+			centre.y = 0;
 			
 			// For each search space
 			foreach (SearchSpace searchSpace in this.searchSpace) {
@@ -131,26 +134,30 @@ public class TowerShooting : MonoBehaviour {
 				for (float t = searchSpace.start; t <= searchSpace.end; t += timeStep) {
 					
 					Vector3 point = enemy.positionAt(t);
+					point.y = centre.y;
 					
 					// Time for projectile to reach point
-					float projectileTime = Vector3.Distance(spawn.transform.position, point) / projectileSpeed;
+					//float projectileTime = Vector3.Distance(spawn.transform.position, point) / projectileSpeed;
+					float projectileTime = Vector3.Distance(centre, point) / projectileSpeed;
 					
 					// Enemy's position after a time lapse of projectileTime
 					if (!enemy.realTimeBoundsTest(projectileTime)) break;
 					Vector3 position = enemy.timeLapse(projectileTime);
+					position.y = centre.y;
 					
 					// Enemy's position is close to point on curve
 					if (Vector3.Distance(position, point) <= tolerance) {
 						
 						// Rotate to face point
-						point.z = centre.z;
+						//point.y = centre.y;
 						transform.rotation = Quaternion.LookRotation(point - centre, transform.up);
 						
 						// Fire if possible
 						if (this.time <= 0) {
 						
 							//GameObject shot = (GameObject) Instantiate(projectile, spawn.transform.position, projectile.transform.rotation);
-							GameObject shot = (GameObject) Instantiate(projectile, spawn.transform.position, Quaternion.LookRotation(point - transform.position, transform.up));
+							GameObject shot = (GameObject) Instantiate(projectile, spawn.transform.position, Quaternion.LookRotation(point - centre, transform.up));
+							point.y = spawn.transform.position.y;
 							shot.GetComponent<Projectile>().initialise(this, point, projectileSpeed, damage, penetration);
 							this.time = cooldown;
 						}
@@ -165,7 +172,8 @@ public class TowerShooting : MonoBehaviour {
 			
 			
 			Vector3 pos = target.transform.position;
-			pos.z = centre.z;
+			//pos.z = centre.z;
+			pos.y = centre.y;
 			transform.rotation = Quaternion.LookRotation(pos - centre, transform.up);
 		}
 	}
